@@ -49,7 +49,7 @@
     </style>
 </head>
 <body>
-    <!-- Form to Add Tasks -->
+
     <form id="submit" action="{{ url('addTask') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="container">
@@ -64,28 +64,24 @@
             </div>
         </div>
     </form>
-
-    <!-- Loader -->
     <div class="loader">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <!-- jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
        $(document).ready(function() {
-            // Toastr options
             toastr.options = {
-                "closeButton": true,        // Show close button
-                "progressBar": true,        // Show progress bar
-                "positionClass": "toast-top-center", // Position at top center
-                "timeOut": "3000",          // Duration of the toast
-                "extendedTimeOut": "1000"   // Duration of the extended time
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "timeOut": "3000",
+                "extendedTimeOut": "1000"
             };
 
             $(document).on("submit", "#submit", function(event) {
@@ -93,7 +89,6 @@
                 $(".loader").fadeIn("slow");
 
                 var taskInput = $("#task").val();
-                // Check if task already exists in the list
                 if ($("#task-list li").text().includes(taskInput)) {
                     toastr.remove();
                     toastr.error("Duplicate task. Please enter a different task.");
@@ -114,12 +109,12 @@
 
                         if (response.result === 1) {
                             toastr.remove();
-                            toastr.success(response.msg);  // Success message with green color
+                            toastr.success(response.msg);
                             addTaskToList(response.task);
                         }
                         if (response.result === 0) {
                             toastr.remove();
-                            toastr.error(response.msg);  // Error toast when task is duplicate
+                            toastr.error(response.msg);
                             return false;
                         }
 
@@ -139,17 +134,16 @@
                 </li>`;
 
                 $("#task-list").append(taskItem);
-                $("#task").val(""); // Clear input field after adding task
+                $("#task").val("");
             }
 
-            // Task Checkbox (Mark as completed and disappear)
             $(document).on("change", ".task-checkbox", function() {
                 var taskId = $(this).data("task-id");
                 var taskItem = $(this).closest("li");
 
                 if (this.checked) {
                     taskItem.css("text-decoration", "line-through");
-                    taskItem.fadeOut(500); // Hide the task
+                    taskItem.fadeOut(500);
                     markTaskAsCompleted(taskId);
                 }
             });
@@ -170,7 +164,6 @@
                 });
             }
 
-            // Show All Tasks
             $("#show-all-btn").click(function(event) {
                 event.preventDefault();
                 $(".loader").fadeIn("slow");
@@ -182,9 +175,9 @@
                         $(".loader").fadeOut("slow");
 
                         if (response.result === 1) {
-                            $("#task-list").empty();  // Clear existing tasks
+                            $("#task-list").empty();
                             response.tasks.forEach(function(task) {
-                                addTaskToList(task);  // Add each task to the list
+                                addTaskToList(task);
                             });
                         }
                     },
@@ -196,7 +189,6 @@
                 });
             });
 
-            // Delete Task
             $(document).on("click", ".delete-btn", function() {
                 var taskId = $(this).data("task-id");
 

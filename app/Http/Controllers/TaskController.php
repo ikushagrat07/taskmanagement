@@ -38,15 +38,14 @@ class TaskController extends Controller
         ];
 
         $existing_task = TaskModel::findTask($taskDetails);
-        if($existing_task)
-        {
+        if ($existing_task) {
             return response()->json(['result' => 0, 'msg' => 'Duplicate task. Please enter a different task.']);
         }
 
         $task = TaskModel::storeTask($taskDetails);
 
-        return response()->json(['result' => 1, 'msg' => 'Task has been added successfully.','task' => $task, ]);
-}
+        return response()->json(['result' => 1, 'msg' => 'Task has been added successfully.', 'task' => $task,]);
+    }
 
 
 
@@ -57,28 +56,21 @@ class TaskController extends Controller
     }
 
 
-public function deleteTask(Request $request )
-{
-    $id = $request->post('id');
-    // dd($id);
-        // Retrieve the task from the database by its ID
-    $task = TaskModel::getTaskById($id);
+    public function deleteTask(Request $request)
+    {
+        $id = $request->post('id');
+        $task = TaskModel::getTaskById($id);
+        if (!$task) {
+            return response()->json(['result' => 0, 'msg' => 'Task not found.']);
+        }
 
-    // Check if the task exists
-    if (!$task) {
-        return response()->json(['result' => 0, 'msg' => 'Task not found.']);
+        $result = TaskModel::deleteTask($id);
+        if ($result) {
+            return response()->json(['result' => 1, 'msg' => 'Task deleted successfully']);
+        } else {
+            return response()->json(['result' => -1, 'msg' => 'Try Again Later']);
+        }
     }
-
-    // Update the task status to 'Deleted'
-    $result = TaskModel::deleteTask($id);
-
-    // Respond back with success or failure
-    if ($result) {
-        return response()->json(['result' => 1, 'msg' => 'Task deleted successfully']);
-    } else {
-        return response()->json(['result' => -1, 'msg' => 'Try Again Later']);
-    }
-}
     public function markAsComplete(Request $request)
     {
 
